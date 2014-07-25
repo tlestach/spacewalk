@@ -14,10 +14,6 @@
  */
 package com.redhat.rhn.frontend.xmlrpc.satellite;
 
-import com.redhat.rhn.common.client.ClientCertificate;
-import com.redhat.rhn.common.client.ClientCertificateDigester;
-import com.redhat.rhn.common.client.InvalidCertificateException;
-import com.redhat.rhn.common.conf.ConfigDefaults;
 import com.redhat.rhn.domain.channel.ChannelFamily;
 import com.redhat.rhn.domain.channel.ChannelFamilyFactory;
 import com.redhat.rhn.domain.entitlement.Entitlement;
@@ -30,18 +26,13 @@ import com.redhat.rhn.domain.server.ServerGroupFactory;
 import com.redhat.rhn.domain.user.User;
 import com.redhat.rhn.frontend.dto.ChannelOverview;
 import com.redhat.rhn.frontend.xmlrpc.BaseHandler;
-import com.redhat.rhn.frontend.xmlrpc.MethodInvalidParamException;
 import com.redhat.rhn.frontend.xmlrpc.PermissionCheckFailureException;
 import com.redhat.rhn.frontend.xmlrpc.system.XmlRpcSystemHelper;
 import com.redhat.rhn.manager.channel.ChannelManager;
 import com.redhat.rhn.manager.entitlement.EntitlementManager;
-import com.redhat.rhn.manager.system.SystemManager;
 
 import org.apache.log4j.Logger;
-import org.xml.sax.SAXException;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -164,60 +155,5 @@ public class SatelliteHandler extends BaseHandler {
         }
 
         return CertificateFactory.lookupNewestCertificate().getExpires();
-    }
-
-    /**
-     * Indicates if monitoring is enabled on the satellite
-     * available since API version 10.13
-     * @param loggedInUser The current user
-     * @return True if monitoring is enabled
-     *
-     * @xmlrpc.doc Indicates if monitoring is enabled on the satellite
-     * @xmlrpc.param #param("string", "sessionKey")
-     * @xmlrpc.returntype #param("boolean", "True if monitoring is enabled")
-     */
-    public boolean isMonitoringEnabled(User loggedInUser) {
-        return ConfigDefaults.get().isMonitoringBackend();
-    }
-
-    /**
-     * Indicates if monitoring is enabled on the satellite
-     * available since API version 10.14
-     * @param clientcert client certificate of the system.
-     * @return True if monitoring is enabled
-     * @throws MethodInvalidParamException thrown if certificate is invalid.
-     *
-     * @xmlrpc.doc Indicates if monitoring is enabled on the satellite
-     * @xmlrpc.param #param_desc("string", "systemid", "systemid file")
-     * @xmlrpc.returntype #param("boolean", "True if monitoring is enabled")
-     */
-
-    public boolean isMonitoringEnabledBySystemId(String clientcert)
-        throws MethodInvalidParamException {
-
-        StringReader rdr = new StringReader(clientcert);
-        Server server = null;
-
-        ClientCertificate cert;
-        try {
-            cert = ClientCertificateDigester.buildCertificate(rdr);
-            server = SystemManager.lookupByCert(cert);
-        }
-        catch (IOException ioe) {
-            log.error("IOException - Trying to access a system with an " +
-                    "invalid certificate", ioe);
-            throw new MethodInvalidParamException();
-        }
-        catch (SAXException se) {
-            log.error("SAXException - Trying to access a " +
-                    "system with an invalid certificate", se);
-            throw new MethodInvalidParamException();
-        }
-        catch (InvalidCertificateException e) {
-            log.error("InvalidCertificateException - Trying to access a " +
-                    "system with an invalid certificate", e);
-            throw new MethodInvalidParamException();
-        }
-        return ConfigDefaults.get().isMonitoringBackend();
     }
 }

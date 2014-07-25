@@ -22,13 +22,10 @@ import com.redhat.rhn.domain.action.ActionFactory;
 import com.redhat.rhn.domain.server.Server;
 import com.redhat.rhn.domain.user.User;
 import com.redhat.rhn.domain.user.UserServerPreferenceId;
-import com.redhat.rhn.frontend.dto.monitoring.ServerProbeComparator;
 import com.redhat.rhn.frontend.struts.RequestContext;
 import com.redhat.rhn.frontend.struts.RhnAction;
 import com.redhat.rhn.frontend.struts.RhnHelper;
 import com.redhat.rhn.manager.action.ActionManager;
-import com.redhat.rhn.manager.entitlement.EntitlementManager;
-import com.redhat.rhn.manager.monitoring.MonitoringManager;
 import com.redhat.rhn.manager.rhnpackage.PackageManager;
 import com.redhat.rhn.manager.system.SystemManager;
 import com.redhat.rhn.manager.user.UserManager;
@@ -38,7 +35,6 @@ import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -111,9 +107,6 @@ public class SystemOverviewAction extends RhnAction {
         // Reboot needed after certain types of updates
         boolean rebootRequired = SystemManager.requiresReboot(user, sid);
 
-        // Monitoring
-        processRequestForMonitoring(user, s, request);
-
         if (!processLock(user, s, rctx)) {
             request.setAttribute("serverLock", s.getLock());
         }
@@ -160,36 +153,6 @@ public class SystemOverviewAction extends RhnAction {
         }
 
         return serverPreferenceList;
-    }
-
-    protected void processRequestForMonitoring(User user,
-                                               Server s,
-                                               HttpServletRequest request) {
-        if (s.hasEntitlement(EntitlementManager.MONITORING)) {
-            DataResult dr = MonitoringManager.getInstance()
-                            .probesForSystemWithAlerts(user, s, null);
-
-            if (!dr.isEmpty()) {
-                request.setAttribute("probeListEmpty", Boolean.FALSE);
-                dr = sortProbes(dr);
-                request.setAttribute("probeList", dr);
-            }
-            else {
-                request.setAttribute("probeListEmpty", Boolean.TRUE);
-            }
-        }
-        else {
-            request.setAttribute("probeListEmpty", Boolean.TRUE);
-        }
-    }
-
-    protected DataResult sortProbes(DataResult dr) {
-        Object[] probes = dr.toArray();
-        if (probes != null && probes.length > 0) {
-            Arrays.sort(probes, new ServerProbeComparator());
-            return new DataResult(Arrays.asList(probes));
-        }
-        return dr;
     }
 
     /**
