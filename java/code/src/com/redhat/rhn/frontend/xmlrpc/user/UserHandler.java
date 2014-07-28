@@ -344,8 +344,8 @@ public class UserHandler extends BaseHandler {
      * @xmlrpc.param #param("string", "sessionKey")
      * @xmlrpc.param #param_desc("string", "login", "User login name to update.")
      * @xmlrpc.param #param_desc("string", "role", "Role label to add.  Can be any of:
-     * satellite_admin, org_admin, channel_admin, config_admin, system_group_admin,
-     * activation_key_admin, or monitoring_admin.")
+     * satellite_admin, org_admin, channel_admin, config_admin, system_group_admin, or
+     * activation_key_admin.")
      * @xmlrpc.returntype #return_int_success()
      */
     public int addRole(User loggedInUser, String login, String role) throws FaultException {
@@ -376,8 +376,8 @@ public class UserHandler extends BaseHandler {
      * @xmlrpc.param #param("string", "sessionKey")
      * @xmlrpc.param #param_desc("string", "login", "User login name to update.")
      * @xmlrpc.param #param_desc("string", "role", "Role label to remove.  Can be any of:
-     * satellite_admin, org_admin, channel_admin, config_admin, system_group_admin,
-     * activation_key_admin, or monitoring_admin.")
+     * satellite_admin, org_admin, channel_admin, config_admin, system_group_admin, or
+     * activation_key_admin.")
      * @xmlrpc.returntype #return_int_success()
      */
     public int removeRole(User loggedInUser, String login, String role)

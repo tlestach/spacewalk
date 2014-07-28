@@ -20,12 +20,6 @@
 <c:if test="${requestScope.criticalSystems == 'y'}">
 	<script type="text/javascript" src="/rhn/dwr/interface/CriticalSystemsRenderer.js"></script>
 </c:if>
-<c:if test="${requestScope.criticalProbes == 'y'}">
-	<script type="text/javascript" src="/rhn/dwr/interface/CriticalProbesRenderer.js"></script>
-</c:if>
-<c:if test="${requestScope.warningProbes == 'y'}">
-	<script type="text/javascript" src="/rhn/dwr/interface/WarningProbesRenderer.js"></script>
-</c:if>
 <c:if test="${requestScope.pendingActions =='y'}">
 	<script type="text/javascript" src="/rhn/dwr/interface/PendingActionsRenderer.js"></script>
 </c:if>
@@ -70,21 +64,6 @@
   		        </div>
         </c:if>
 
-        <c:if test="${requestScope.criticalProbes == 'y'}">
-            <div id="critical-probes-pane" class="row">
-                <script type="text/javascript">
-                    CriticalProbesRenderer.renderAsync(makeRendererHandler("critical-probes-pane", false));
-                </script>
-            </div>
-        </c:if>
-
-        <c:if test="${requestScope.warningProbes == 'y'}">
-            <div id="warning-probes-pane" class="row">
-                <script type="text/javascript">
-                    WarningProbesRenderer.renderAsync(makeRendererHandler("warning-probes-pane", false));
-                </script>
-            </div>
-        </c:if>
         <c:if test="${requestScope.pendingActions =='y'}">
             <div id="pending-actions-pane" class="row">
                 <script type="text/javascript">
